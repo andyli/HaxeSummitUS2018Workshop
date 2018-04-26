@@ -1,0 +1,4 @@
+-cp src
+-lib heaps
+-main Main
+-hl bin/src/main.c
