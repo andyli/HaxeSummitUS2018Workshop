@@ -323,7 +323,7 @@ var Main = function() {
 	this.connected = false;
 	this.stage = hxd_Stage.getInstance();
 	hxd_App.call(this);
-	haxe_Log.trace("built at " + "2018-04-29 15:51:20",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "new"});
+	haxe_Log.trace("built at " + "2018-04-29 15:55:57",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "new"});
 	this.world = new game_World();
 	this.id = this.world.createPlayer().id;
 	hxd_Stage.getInstance().addEventTarget($bind(this,this.onEvent));
