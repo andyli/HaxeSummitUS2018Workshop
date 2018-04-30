@@ -316,17 +316,12 @@ hxd_App.prototype = {
 	,__class__: hxd_App
 };
 var Main = function() {
-	this.cursor = { x : 0.0, y : 0.0};
-	this.touched = false;
 	this.sprites = new haxe_ds_ObjectMap();
+	this.touched = false;
 	this.id = null;
 	this.connected = false;
 	this.stage = hxd_Stage.getInstance();
 	hxd_App.call(this);
-	haxe_Log.trace("built at " + "2018-04-30 14:57:10",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "new"});
-	this.world = new game_World();
-	this.id = this.world.createPlayer().id;
-	this.stage.addEventTarget($bind(this,this.onEvent));
 };
 $hxClasses["Main"] = Main;
 Main.__name__ = ["Main"];
@@ -339,37 +334,26 @@ Main.main = function() {
 };
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
-	update: function(_) {
+	init: function() {
+		haxe_Log.trace("built at " + "2018-04-30 15:54:21",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "init"});
+		this.world = new game_World(this.s2d.width,this.s2d.height);
+		this.id = this.world.createPlayer().id;
+		this.stage.addEventTarget($bind(this,this.onEvent));
+	}
+	,update: function(_) {
 		var _gthis = this;
 		this.state = this.world.update();
-		if(this.root == null) {
-			this.root = new h2d_Sprite(this.s2d);
-		}
 		var player = Lambda.find(this.state.objects,function(o) {
 			return o.id == _gthis.id;
 		});
 		if(player != null) {
 			if(this.touched) {
-				var dir = Math.atan2(this.cursor.y - this.stage.get_height() / 2,this.cursor.x - this.stage.get_width() / 2);
+				var dir = Math.atan2(this.stage.get_mouseY() - player.y,this.stage.get_mouseX() - player.x);
 				player.speed = 3;
 				player.dir = dir;
 			} else {
 				player.speed = 0;
 			}
-			var scale = 40 / player.size;
-			var _this = this.root;
-			var _this1 = this.root;
-			_this1.posChanged = true;
-			_this.posChanged = true;
-			_this.scaleX = _this1.scaleY = this.root.scaleX + (scale - this.root.scaleX) * 0.25;
-			var _this2 = this.root;
-			var v = this.stage.get_width() / 2;
-			_this2.posChanged = true;
-			_this2.x = v - player.x * this.root.scaleX;
-			var _this3 = this.root;
-			var v1 = this.stage.get_height() / 2;
-			_this3.posChanged = true;
-			_this3.y = v1 - player.y * this.root.scaleX;
 		}
 		var _g = 0;
 		var _g1 = this.state.objects;
@@ -378,7 +362,7 @@ Main.prototype = $extend(hxd_App.prototype,{
 			++_g;
 			if(this.sprites.h.__keys__[object.__id__] == null) {
 				var size = 100;
-				var g = new h2d_Graphics(this.root);
+				var g = new h2d_Graphics(this.s2d);
 				g.beginFill(object.color);
 				g.drawCircle(0,0,size / 2);
 				g.endFill();
@@ -402,9 +386,9 @@ Main.prototype = $extend(hxd_App.prototype,{
 					return obj == object4[0];
 				};
 			})(object3))) {
-				var _this4 = this.sprites.h[object3[0].__id__];
-				if(_this4 != null && _this4.parent != null) {
-					_this4.parent.removeChild(_this4);
+				var _this = this.sprites.h[object3[0].__id__];
+				if(_this != null && _this.parent != null) {
+					_this.parent.removeChild(_this);
 				}
 				this.sprites.remove(object3[0]);
 			}
@@ -414,40 +398,13 @@ Main.prototype = $extend(hxd_App.prototype,{
 		var _g = event.kind;
 		switch(_g[1]) {
 		case 0:
-			this.onmousedown();
+			this.touched = true;
 			break;
-		case 1:
-			this.onmouseup();
-			break;
-		case 2:
-			this.onmousemove();
+		case 1:case 10:
+			this.touched = false;
 			break;
 		default:
 		}
-	}
-	,onmousedown: function() {
-		this.touched = true;
-		this.cursor.x = this.stage.get_mouseX();
-		this.cursor.y = this.stage.get_mouseY();
-	}
-	,onmousemove: function() {
-		this.cursor.x = this.stage.get_mouseX();
-		this.cursor.y = this.stage.get_mouseY();
-	}
-	,onmouseup: function() {
-		this.touched = false;
-	}
-	,ontouchdown: function() {
-		this.touched = true;
-		this.cursor.x = this.stage.get_mouseX();
-		this.cursor.y = this.stage.get_mouseY();
-	}
-	,ontouchmove: function() {
-		this.cursor.x = this.stage.get_mouseX();
-		this.cursor.y = this.stage.get_mouseY();
-	}
-	,ontouchup: function() {
-		this.touched = false;
 	}
 	,__class__: Main
 });
@@ -3507,10 +3464,10 @@ game_ObjectType.Food = ["Food",2];
 game_ObjectType.Food.toString = $estr;
 game_ObjectType.Food.__enum__ = game_ObjectType;
 game_ObjectType.__empty_constructs__ = [game_ObjectType.Player,game_ObjectType.Ai,game_ObjectType.Food];
-var game_World = function() {
+var game_World = function(width,height) {
 	this.count = 0;
 	this.objects = [];
-	this.size = { width : 2000, height : 2000};
+	this.size = { width : width, height : height};
 	var _g = 0;
 	while(_g < 10) {
 		var i = _g++;
