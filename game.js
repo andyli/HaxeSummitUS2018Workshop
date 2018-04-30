@@ -323,10 +323,10 @@ var Main = function() {
 	this.connected = false;
 	this.stage = hxd_Stage.getInstance();
 	hxd_App.call(this);
-	haxe_Log.trace("built at " + "2018-04-30 14:15:15",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "new"});
+	haxe_Log.trace("built at " + "2018-04-30 14:57:10",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "new"});
 	this.world = new game_World();
 	this.id = this.world.createPlayer().id;
-	hxd_Stage.getInstance().addEventTarget($bind(this,this.onEvent));
+	this.stage.addEventTarget($bind(this,this.onEvent));
 };
 $hxClasses["Main"] = Main;
 Main.__name__ = ["Main"];
