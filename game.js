@@ -316,7 +316,7 @@ hxd_App.prototype = {
 	,__class__: hxd_App
 };
 var Main = function() {
-	this.sprites = new haxe_ds_ObjectMap();
+	this.sprites = new haxe_ds_IntMap();
 	this.touched = false;
 	this.id = null;
 	this.connected = false;
@@ -335,7 +335,7 @@ Main.main = function() {
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
-		haxe_Log.trace("built at " + "2018-04-30 15:54:21",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "init"});
+		haxe_Log.trace("built at " + "2018-04-30 18:13:38",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "init"});
 		this.world = new game_World(this.s2d.width,this.s2d.height);
 		this.id = this.world.createPlayer().id;
 		this.stage.addEventTarget($bind(this,this.onEvent));
@@ -360,15 +360,20 @@ Main.prototype = $extend(hxd_App.prototype,{
 		while(_g < _g1.length) {
 			var object = _g1[_g];
 			++_g;
-			if(this.sprites.h.__keys__[object.__id__] == null) {
+			if(!this.sprites.h.hasOwnProperty(object.id)) {
 				var size = 100;
 				var g = new h2d_Graphics(this.s2d);
 				g.beginFill(object.color);
 				g.drawCircle(0,0,size / 2);
 				g.endFill();
-				this.sprites.set(object,g);
+				if(object.id == this.id) {
+					g.beginFill(0);
+					g.drawCircle(0,0,20);
+					g.endFill();
+				}
+				this.sprites.h[object.id] = g;
 			}
-			var sprite = this.sprites.h[object.__id__];
+			var sprite = this.sprites.h[object.id];
 			sprite.posChanged = true;
 			sprite.posChanged = true;
 			sprite.scaleX = sprite.scaleY = object.size / 100;
@@ -377,20 +382,20 @@ Main.prototype = $extend(hxd_App.prototype,{
 			sprite.posChanged = true;
 			sprite.y = object.y;
 		}
-		var object1 = this.sprites.keys();
-		while(object1.hasNext()) {
-			var object2 = object1.next();
-			var object3 = [object2];
-			if(!Lambda.exists(this.state.objects,(function(object4) {
+		var objectId = this.sprites.keys();
+		while(objectId.hasNext()) {
+			var objectId1 = objectId.next();
+			var objectId2 = [objectId1];
+			if(!Lambda.exists(this.state.objects,(function(objectId3) {
 				return function(obj) {
-					return obj == object4[0];
+					return obj.id == objectId3[0];
 				};
-			})(object3))) {
-				var _this = this.sprites.h[object3[0].__id__];
+			})(objectId2))) {
+				var _this = this.sprites.h[objectId2[0]];
 				if(_this != null && _this.parent != null) {
 					_this.parent.removeChild(_this);
 				}
-				this.sprites.remove(object3[0]);
+				this.sprites.remove(objectId2[0]);
 			}
 		}
 	}
