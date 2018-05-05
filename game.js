@@ -335,7 +335,7 @@ Main.main = function() {
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
-		haxe_Log.trace("built at " + "2018-05-04 17:49:47",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "init"});
+		haxe_Log.trace("built at " + "2018-05-05 16:27:28",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "init"});
 		this.world = new game_World(this.s2d.width,this.s2d.height);
 		this.id = this.world.createPlayer().id;
 		this.stage.addEventTarget($bind(this,this.onEvent));
